@@ -2,7 +2,7 @@ import React from "react";
 
 type VideoPlayerProps = {
   videoSrc: string;
-  children: any;
+  children: React.ReactNode;
 };
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoSrc, children }) => (
