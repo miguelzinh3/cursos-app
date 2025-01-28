@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cursos App
 
-## Getting Started
+Feito com Next.js, TypeScript e Context API para gerenciamento de estado.
 
-First, run the development server:
+## Pré-requisitos
+
+Antes de começar, você precisará ter instalado:
+
+- [Node.js](https://nodejs.org/) (versão LTS recomendada)
+- [Yarn](https://yarnpkg.com/)
+
+---
+
+## Como rodar o projeto
+
+1. Clone o repositório:
+
+   ```bash
+   git clone https://github.com/miguelzinh3/cursos-app.git
+   cd cursos-app
+   ```
+
+2. Instale as dependências do projeto:
+
+   ```bash
+   yarn install
+   ```
+
+3. Rode o servidor de dev:
+
+   ```bash
+   yarn dev
+   ```
+
+   O servidor estará acessível em [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Como rodar os testes
+
+Para rodar os testes do projeto:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn test
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/index.tsx`. The page auto-updates as you edit the file.
+## Estrutura de arquivos
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **`src`**: Diretório principal contendo o código-fonte.
+  - **`context/CourseContext.tsx`**: Gerencia o estado relacionado aos cursos e ao progresso do usuário.
+  - **`components/`**: Componentes reutilizáveis do aplicativo.
+  - **`pages/`**: Páginas do aplicativo (seguindo a estrutura do Next.js).
+  - **`styles/`**: Estilos globais e específicos do aplicativo.
+- **`public/`**: Arquivos estáticos servidos diretamente pelo Next.js.
+- **`jest.config.ts`**: Configuração do Jest para os testes.
+- **`package.json`**: Lista de dependências e scripts do projeto.
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## `CourseContext.tsx`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+O arquivo `CourseContext.tsx` gerencia o estado global dos cursos e do progresso dos usuários. Ele utiliza a Context API do React para compartilhar informações em toda a aplicação.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Estado Inicial**:
+  - `initialCourses`: Array contendo os cursos disponíveis.
+  - `initialUserCourses`: Cursos nos quais o usuário está inscrito.
 
-## Deploy on Vercel
+- **Funções principais**:
+  - `hasPurchasedCourse(courseId)`: Verifica se o usuário comprou um curso.
+  - `purchaseCourse(courseId)`: Adiciona um curso ao progresso do usuário.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Provedor de Contexto**:
+  O componente `CourseProvider` encapsula os componentes filhos e fornece os estados e funções relacionadas aos cursos via Context API.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Hook personalizado**:
+  - `useCourseContext()`: Facilita o acesso aos dados do contexto. Ele lança um erro caso seja usado fora do `CourseProvider`.
+
+### Exemplo de uso do contexto:
+
+```tsx
+import { useCourseContext } from "@/context/CourseContext";
+
+const MyComponent = () => {
+  const { courses, hasPurchasedCourse, purchaseCourse } = useCourseContext();
+
+  return (
+    <div>
+      {courses.map((course) => (
+        <div key={course.id}>
+          <h2>{course.name}</h2>
+          {hasPurchasedCourse(course.id) ? (
+            <p>Você já comprou este curso!</p>
+          ) : (
+            <button onClick={() => purchaseCourse(course.id)}>
+              Comprar Curso
+            </button>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+```
